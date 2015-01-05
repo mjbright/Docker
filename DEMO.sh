@@ -1,62 +1,25 @@
 
+#######################################################
+# Script presents a menu starting from the specified
+# directory (or the current directory), allowing
+# to navigate into/out of directories, invoke demo
+# scripts
+
+# Default root dir:
+ROOT=.
+
+#######################################################
+# function: debug
+# Show debug output if _DEBUG is set to non-zero value:
 _DEBUG=0
 function debug {
     [ $_DEBUG -eq 0 ] && return
     echo $*
 }
 
-function myselect {
-    debug "::myselect[args=$#] <$*>"
-    local OPT
-
-    OPTIONS=()
-    #for OPT in "$@";do; #debug OPT=$OPT; #done
-    #debug ${#OPTIONS[@]}
-        #debug "OPTIONS[]+=$OPT"
-        #debug ${#OPTIONS[@]}
-    #debug OPTIONS=${OPTIONS[@]}
-    for OPT in "$@";do
-        OPTIONS+=("$OPT")
-    done
-
-    while true; do
-        local i
-
-        ENTRIES=${#OPTIONS[@]}
-        #debug "ENTRIES=$ENTRIES"
-        #debug "seq 1 $ENTRIES=<" $(seq 1 $ENTRIES) ">"
-
-        for I in $(seq 1 $ENTRIES);do
-             let i=I-1
-             echo ${I}-${OPTIONS[$i]}
-        done
-        read _INPUT
-         
-        echo $_INPUT | grep -E "^[0-9][0-9]*$" || {
-            echo "Entered non-numeric value<$_INPUT>";
-            continue;
-        }
-
-        if [ $_INPUT -lt 1 ];then
-            echo "$_INPUT is out of range (below 0)"
-        elif [ $_INPUT -gt $ENTRIES ];then
-            echo "$_INPUT is out of range (above $ENTRIES)"
-        else
-            let I=_INPUT
-            let i=I-1
-            OPT=${OPTIONS[$i]}
-            echo "Entered <$_INPUT> $OPT"
-            break
-        fi
-
-    done
-
-    opt=$OPT
-    REPLY=$I
-
-    debug "myselect: OPT=$opt REPLY=$REPLY"
-}
-
+#######################################################
+# function: enumDir
+#    - Populate array variables SCRIPTS/DIRS with scripts/dirs seen in current dir
 function enumDir {
     SCRIPTS=()
     DIRS=()
@@ -70,19 +33,21 @@ function enumDir {
     scripts=${#SCRIPTS[@]}
     dirs=${#DIRS[@]}
     let entries=scripts+dirs
-    echo "Found $scripts executable scripts <${SCRIPTS[@]}>"
-    echo "Found $dirs               dirs <${DIRS[@]}>"
+    debug "Found $scripts executable scripts <${SCRIPTS[@]}>"
+    debug "Found $dirs               dirs <${DIRS[@]}>"
 }
 
+#######################################################
+# function: showMenuDir
+#    - Present menu of scripts/dirs
+#    - Invoke scripts, go up/down into dirs based on selection
 function showMenuDir {
     if [ $# -eq 2 ];then
         DIR=$1;  shift;
         ROOT=$1; shift;
-        #cd  $DIR
     else
         DIR=$1;  shift;
         ROOT=$DIR
-        #cd  $ROOT
     fi
 
     cd  $DIR
@@ -90,55 +55,44 @@ function showMenuDir {
 
     enumDir
 
-    #[ $DIR != $ROOT ] && DIRS+=".."
-
     echo
     echo "Select script to run (or directory):"
-    #select opt in "${SCRIPTS[@]}" "${DIRS[@]}" "** UP/EXIT **"
-    #do
-    while true; do
-        ITEMS=("${SCRIPTS[@]}" "${DIRS[@]}" "-- UP/EXIT --")
-        #ITEMS=("${SCRIPTS[@]}" "${DIRS[@]}" "** UP/EXIT **")
-        debug "::::myselect" "${ITEMS[@]}"
-        myselect "${ITEMS[@]}"
-        #myselect "${SCRIPTS[@]}" "${DIRS[@]}" "** UP/EXIT **"
+    ITEMS=("${SCRIPTS[@]}" "${DIRS[@]}" "-- UP/EXIT --")
+    select opt in "${ITEMS[@]}"
+    do
         debug "OPT=$opt REPLY=$REPLY SCRIPTS=<${SCRIPTS[@]}>"
         if [ $REPLY -gt $entries ];then
             debug "OORANGE"
             [ $DIR == $ROOT ] && {
-                echo "------------------ exiting -----------------------------";
+                debug "------------------ exiting -----------------------------";
                 exit 0;
             } || {
-                echo "------------------ leaving ... cd .. -------------------";
+                debug "------------------ leaving ... cd .. -------------------";
                 cd ..;
-                echo "[$PWD] ... after leaving":
+                debug "[$PWD] ... after leaving":
                 break;
-                #return;
             }
         elif [ $REPLY -le $scripts ];then
             debug "IN SCRIPTS RANGE"
             SCRIPT=./$opt
             debug "A script ($SCRIPT)"
             $SCRIPT
-            #$DIR/$opt
-                #break;
         else
             debug "IN DIRS RANGE"
             debug "A dir [$DIR/$opt]"
             DIR=$opt
             showMenuDir $DIR $ROOT
-                #cd ..;
-                echo "[$PWD] ... after showMenuDir":
-                #break;
-                enumDir
+            debug "[$PWD] ... after showMenuDir":
+            enumDir
         fi
     done
-
-    #echo "------------------ exiting ... cd $ROOT -------------------"
-    #cd $ROOT
 }
 
-ROOT=.
+#######################################################
+# Process command-line args:
+
+# Usage:
+#   Script [<rootdir>]
 
 while [ ! -z "$1" ];do
     case $1 in
@@ -148,7 +102,7 @@ while [ ! -z "$1" ];do
     shift
 done
 
-
+# Invoke menu:
 debug "[$PWD] showMenuDir $ROOT"
 showMenuDir $ROOT
 
