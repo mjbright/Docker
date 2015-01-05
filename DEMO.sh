@@ -51,6 +51,13 @@ function showMenuDir {
     fi
 
     cd  $DIR
+    [ -f profile ] && { 
+        debug "export DEMO_PROFILE=profile"
+        export DEMO_PROFILE=profile
+        #debug ". profile";
+        #. profile;
+    }
+
     debug "cd [$PWD]"
 
     enumDir
