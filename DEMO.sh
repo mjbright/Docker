@@ -1,12 +1,12 @@
 
 #######################################################
 # Script presents a menu starting from the specified
-# directory (or the current directory), allowing
+# directory (or MENUS in the current directory), allowing
 # to navigate into/out of directories, invoke demo
 # scripts
 
 # Default root dir:
-ROOT=.
+ROOT=./MENUS
 
 #######################################################
 # function: debug
@@ -26,7 +26,7 @@ function enumDir {
     for item in *;do
         debug "item=$item \$0=$0"
         [ $item = ${0##*/} ] && break;
-        [ -f $item ] && [ -e $item ] && { SCRIPTS+=("$item"); debug "Added script"; }
+        [ -f $item ] && [ -x $item ] && { SCRIPTS+=("$item"); debug "Added script"; }
         [ -d $item ]                 && { DIRS+=("$item"); debug "Added dir"; }
     done
 
@@ -61,6 +61,13 @@ function showMenuDir {
     select opt in "${ITEMS[@]}"
     do
         debug "OPT=$opt REPLY=$REPLY SCRIPTS=<${SCRIPTS[@]}>"
+        [ "$REPLY" = "q" ] && exit 0
+
+        echo $REPLY | grep -E "^[0-9][0-9]*$" || {
+            echo "Entered non-numeric value<$_INPUT>";
+            continue;
+        }
+
         if [ $REPLY -gt $entries ];then
             debug "OORANGE"
             [ $DIR == $ROOT ] && {
