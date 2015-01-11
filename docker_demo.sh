@@ -316,11 +316,13 @@ DEMO6() {
 
     docker LOGIN
 
+    DOCKERFILE_EXAMPLE
+
     echo; pause "Let's search the registry for mjbright"
     SHOW_DOCKER search mjbright
 
     echo; pause "About to startup our local ping image"
-    SHOW_DOCKER run --name PING -d my/ping www.google.com
+    SHOW_DOCKER run --name PING -d mine/ping www.google.com
 
     echo; pause "About to attach to the new container"
     SHOW_DOCKER attach PING
@@ -421,7 +423,8 @@ autostart=true
 EOF
 
     cat > Dockerfile <<"EOF"
-FROM ubuntu:saucy
+#FROM ubuntu:saucy
+FROM ubuntu:latest
 MAINTAINER Fernando Mayo <fernando@tutum.co>
 
 # Install packages
@@ -626,7 +629,8 @@ if __name__ == '__main__':
 EOF
 
     cat > Dockerfile << "EOF"
-FROM ubuntu:saucy
+#FROM ubuntu:saucy
+FROM ubuntu:latest
 MAINTAINER Michael Bright <dockerfun@mjbright.net>
 
 RUN echo "deb http://archive.ubuntu.com/ubuntu/ raring main universe" >> /etc/apt/sources.list
@@ -803,9 +807,9 @@ TEST2() {
 
 TEST3() {
     RMALL
-    docker images | grep my/ping && {
-        echo "Removing exisint 'my/ping' image";
-        SHOW_DOCKER rmi my/ping;
+    docker images | grep mine/ping && {
+        echo "Removing exisint 'mine/ping' image";
+        SHOW_DOCKER rmi mine/ping;
     }
 
 
@@ -818,7 +822,7 @@ TEST3() {
     DOCKERFILE_EXAMPLE
 
     echo; pause "Now let's rerun that ping"
-    SHOW_DOCKER run my/ping www.google.com
+    SHOW_DOCKER run mine/ping www.google.com
 }
 
 LOGIN() {
@@ -907,10 +911,10 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install ping
 #RUN apt-get install ping
 ENTRYPOINT ["ping"]
 EOF
-    SHOW_DOCKER build -t my/ping - < /tmp/ex.docker
+    SHOW_DOCKER build -t mine/ping - < /tmp/ex.docker
     SHOW_DOCKER images
 
-    SHOW_DOCKER run my/ping www.google.com
+    SHOW_DOCKER run mine/ping www.google.com
 
     echo "PING interrupted"
 }

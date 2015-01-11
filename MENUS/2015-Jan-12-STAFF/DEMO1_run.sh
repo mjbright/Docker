@@ -18,17 +18,21 @@ PROFILE=$SCRIPTDIR/profile
 RMALL
 #LIST_ALL pause
 
+echo; pause "Let's look at current Docker containers"
+LIST_ALL
+
 BANNER "Show basic container launching"
 
 echo; pause "List all local Docker images"
 SHOW_DOCKER images
 
-IMAGE1=`docker images | head -2 | tail -1 | awk '{print $1;}'`
-echo; pause "Show history of first local Docker image [$IMAGE1]"
-SHOW_DOCKER history $IMAGE1
+# IMAGE1=`docker images | head -2 | tail -1 | awk '{print $1;}'`
+# echo; pause "Show history of first local Docker image [$IMAGE1]"
+# SHOW_DOCKER history $IMAGE1
 
 echo; pause "Starting Docker container in interactive mode: 'hello world'"
-SHOW_DOCKER run --name HelloWorld_`dtime` base echo 'hello world'
+SHOW_DOCKER run base echo 'hello world'
+#SHOW_DOCKER run --name HelloWorld_`dtime` base echo 'hello world'
 
 echo; pause "Let's look at current Docker containers"
 LIST_ALL
