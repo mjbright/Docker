@@ -19,14 +19,15 @@ RMALL
 #LIST_ALL pause
 
 echo; pause "Let's launch an image of a different Linux version"
-echo "Our host is running (o/p of <uname -a>): " $(uname -a)
+echo "Our host is running (o/p of <uname -a>): "
+uname -a
+cat /etc/lsb-release
 
 echo; pause "Now let's launch a CentOS image (open source version of RedHat Linux)"
 
 echo "Our contained is running (o/p of <uname -a> and <cat /etc/centos-release>): "
 CMD="uname -a; cat /etc/centos-release"
 SHOW_DOCKER run centos /bin/sh -c "\"$CMD\""
-SHOW_DOCKER run centos /bin/sh -c "uname -a; cat /etc/centos-release"
 
 SHOW_DOCKER run -it centos bash
 
