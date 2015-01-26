@@ -1,0 +1,13 @@
+
+Add/sort old demos
+
+Add demos for
+- orchestrate multi-tier solutions
+- owncloud?
+- 
+
+Fun stuff:
+- rm -rf
+- mini images (empty + static binary)
+
+
