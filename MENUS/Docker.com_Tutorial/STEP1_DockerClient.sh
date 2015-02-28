@@ -29,7 +29,7 @@ sourceProfiles
 ################################################################################
 
 [ -z "$DOCKERHUB_USER" ] &&
-    die "You must export DOCKERHUB_USER variable to your Docker hub username"
+    die "You must 'export DOCKERHUB_USER=<user>' variable, set it to your Docker hub username"
 
 USER=$DOCKERHUB_USER # Username on docker hub
 
