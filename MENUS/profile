@@ -85,7 +85,7 @@ RMALL() {
 }
 
 SHOW_DOCKER() {
-     echo "docker $@"
+     echo "--> docker $@"
      eval docker $@
 }
 
