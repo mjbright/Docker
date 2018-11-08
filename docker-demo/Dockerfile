@@ -4,10 +4,18 @@ FROM golang:alpine AS build-env
 #FROM scratch
 
 ADD . /src
-RUN cd /src && go build -o docker-demo
+
+# Command works:
+
+# VERSION to use with 'FROM alpine' below:
+#RUN cd /src && go build -o docker-demo
+
+# VERSION to use with 'FROM scratch' below:
+RUN cd /src && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags '-w' -o docker-demo *.go
 
 # final stage
 FROM scratch
+#FROM alpine
 
 ADD static /app/static
 ADD templates /app/templates
