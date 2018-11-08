@@ -7,7 +7,7 @@ ADD . /src
 RUN cd /src && go build -o docker-demo
 
 # final stage
-FROM alpine
+FROM scratch
 
 ADD static /app/static
 ADD templates /app/templates
