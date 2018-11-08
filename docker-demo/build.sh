@@ -1,4 +1,7 @@
 
+# --no-cache is necessary for build to rebuild artifacts correctly:
+CACHE="--no-cache"
+
 RUN() {
     CMD="$*"
 
@@ -6,6 +9,6 @@ RUN() {
     $CMD
 }
 
-RUN docker build -t mjbright/docker-demo:1 .
+RUN docker build $CACHE -t mjbright/docker-demo:1 .
 
 
