@@ -11,7 +11,8 @@ ADD . /src
 #RUN cd /src && go build -o docker-demo
 
 # VERSION to use with 'FROM scratch' below:
-RUN cd /src && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags '-w' -o docker-demo *.go
+#RUN cd /src && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags '-w' -o docker-demo *.go
+RUN cd /src && CGO_ENABLED=0 go build -a -o docker-demo
 
 # final stage
 FROM scratch
