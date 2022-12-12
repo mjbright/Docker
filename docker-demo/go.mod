@@ -1,1 +1,1 @@
-module github.com/mjbright/Docker
+module github.com/mjbright/Docker/docker-demo
